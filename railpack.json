@@ -1,5 +1,7 @@
 {
     "packages": {
-        "php": "8.3"
-    }
+        "php": "8.3",
+        "bison": "latest"
+    },
+    "aptPackages": ["bison"]
 }
