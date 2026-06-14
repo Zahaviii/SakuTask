@@ -1,7 +1,6 @@
 {
     "packages": {
-        "php": "8.3",
-        "bison": "latest"
+        "php": "8.3"
     },
-    "aptPackages": ["bison"]
+    "buildAptPackages": ["bison"]
 }
