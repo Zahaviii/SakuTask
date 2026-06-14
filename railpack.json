@@ -1,5 +1,5 @@
 {
-    "php": {
-        "version": "8.3"
+    "packages": {
+        "php": "8.3"
     }
 }
