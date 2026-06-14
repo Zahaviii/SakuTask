@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SakuTask - Todolist App Bagus & Friendly</title>
+    <!-- Google Fonts for Friendly Rounded Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- AUTH SECTION -->
+    <div id="auth-section">
+        <div class="auth-container">
+            <div class="auth-logo">
+                <h1>SakuTask</h1>
+                <p class="auth-subtitle">Kelola tugas harian secara terstruktur dan efisien.</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Masuk</button>
+                <button class="tab-btn" onclick="showTab('register')">Daftar Akun</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form-body">
+                <div class="form-group">
+                    <label for="login-email">Alamat Email</label>
+                    <input type="email" id="login-email" placeholder="contoh@surel.com" />
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Kata Sandi</label>
+                    <input type="password" id="login-password" placeholder="Masukkan kata sandi..." />
+                </div>
+                <button onclick="login()" class="btn-primary">Masuk</button>
+                <p id="login-error" class="error"></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form-body" style="display:none;">
+                <div class="form-group">
+                    <label for="reg-name">Nama Lengkap</label>
+                    <input type="text" id="reg-name" placeholder="Nama lengkap Anda" />
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Alamat Email</label>
+                    <input type="email" id="reg-email" placeholder="contoh@surel.com" />
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Kata Sandi Baru</label>
+                    <input type="password" id="reg-password" placeholder="Minimal 6 karakter" />
+                </div>
+                <button onclick="register()" class="btn-primary">Daftar</button>
+                <p id="reg-error" class="error"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SECTION -->
+    <div id="app-section" style="display:none;">
+        <div class="dashboard-layout">
+            
+            <!-- SIDEBAR PANEL -->
+            <aside id="sidebar-panel" class="sidebar">
+                <!-- Close Button on Mobile (Hidden on Desktop) -->
+                <button class="sidebar-close-btn" onclick="toggleSidebar(false)" title="Tutup Menu">✕</button>
+                
+                <div class="sidebar-brand-wrapper">
+                    <span class="sidebar-logo">💼 SakuTask</span>
+                </div>
+                
+                <!-- Quick User Profile inside Sidebar -->
+                <div class="sidebar-user-card">
+                    <div class="user-avatar-circle">👤</div>
+                    <div class="user-details">
+                        <span class="user-label">Pengguna Aktif</span>
+                        <h3 id="sidebar-user-name" class="user-name-text">Memuat...</h3>
+                    </div>
+                </div>
+
+                <!-- Sleek Integrated Progress Dashboard -->
+                <div class="sidebar-progress-widget">
+                    <div class="progress-info-stack">
+                        <span class="widget-title">Progres Hari Ini</span>
+                        <span id="progress-percent" class="progress-percentage-label">0% Selesai</span>
+                    </div>
+                    <div class="progress-track-bar">
+                        <div id="progress-bar" class="progress-fill-bar" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-compliment" class="progress-motivation-caption">Belum ada tugas untuk hari ini. Tambahkan tugas untuk mulai mencatat pekerjaan Anda.</p>
+                </div>
+
+                <!-- Modern Sidebar Navigation & Filtering -->
+                <nav class="sidebar-nav-container">
+                    
+                    <!-- CATEGORIES SECTION -->
+                    <div class="nav-section-block">
+                        <div class="nav-section-title-row">
+                            <span class="nav-section-title">📂 KATEGORI</span>
+                            <button class="nav-quick-add-btn" onclick="toggleMiniCreator('category')" title="Buat Kategori Baru">＋</button>
+                        </div>
+                        
+                        <!-- Mini Inline Creator Form -->
+                        <div id="mini-creator-category" class="mini-creator-dropdown" style="display: none;">
+                            <div class="mini-creator-row">
+                                <input type="text" id="cat-name" placeholder="Nama kategori..." />
+                                <div class="mini-creator-controls">
+                                    <input type="color" id="cat-color" value="#3b82f6" title="Warna Kategori" />
+                                    <button onclick="addCategory()" class="btn-mini-save">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter List Navigation -->
+                        <div class="sidebar-nav-list">
+                            <button class="sidebar-nav-item active" id="filter-cat-all" onclick="filterBySidebar('category', 'all')">
+                                <span class="nav-dot-indicator" style="background: #94a3b8;"></span>
+                                <span class="nav-item-title">Semua Kategori</span>
+                            </button>
+                            <!-- Dynamic category list inserted here -->
+                            <div id="categories"></div>
+                        </div>
+                    </div>
+
+                    <!-- TAGS SECTION -->
+                    <div class="nav-section-block">
+                        <div class="nav-section-title-row">
+                            <span class="nav-section-title">🏷️ TAG PENANDA</span>
+                            <button class="nav-quick-add-btn" onclick="toggleMiniCreator('tag')" title="Buat Tag Baru">＋</button>
+                        </div>
+                        
+                        <!-- Mini Inline Creator Form -->
+                        <div id="mini-creator-tag" class="mini-creator-dropdown" style="display: none;">
+                            <div class="mini-creator-row">
+                                <input type="text" id="tag-name" placeholder="Nama tag baru..." />
+                                <div class="mini-creator-controls">
+                                    <input type="color" id="tag-color" value="#8b5cf6" title="Warna Tag" />
+                                    <button onclick="addTag()" class="btn-mini-save">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter List Navigation -->
+                        <div class="sidebar-nav-list">
+                            <button class="sidebar-nav-item active" id="filter-tag-all" onclick="filterBySidebar('tag', 'all')">
+                                <span class="nav-dot-indicator" style="background: #94a3b8;"></span>
+                                <span class="nav-item-title">Semua Tag</span>
+                            </button>
+                            <!-- Dynamic tag list inserted here -->
+                            <div id="tags"></div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Sidebar Footer Log Out Button -->
+                <div class="sidebar-footer-action">
+                    <button onclick="logout()" class="btn-sidebar-logout-card" title="Keluar dari akun">
+                        <span class="logout-icon">🚪</span> Keluar
+                    </button>
+                </div>
+            </aside>
+
+            <!-- SIDEBAR OVERLAY BLACKOUT FOR MOBILE -->
+            <div id="sidebar-overlay" class="sidebar-overlay-backdrop" onclick="toggleSidebar(false)"></div>
+
+            <!-- MAIN WORKSPACE PAGE -->
+            <main class="workspace-panel">
+                
+                <!-- WORKSPACE TITLE HEADER BAR -->
+                <header class="workspace-header-bar">
+                    <div class="header-left-group">
+                        <button class="mobile-hamburger-trigger-btn" onclick="toggleSidebar(true)" title="Buka Sidebar Navigasi">
+                            ☰
+                        </button>
+                        <div class="header-info">
+                            <h1 id="dynamic-greeting">SakuTask</h1>
+                            <p id="time-motivation" class="motivation-subtitle">Kelola tugas harian secara terstruktur dan efisien.</p>
+                        </div>
+                    </div>
+                    
+                    <button id="toggle-add-form-btn" class="btn-primary-header-trigger" onclick="toggleAddForm()">
+                        <span class="btn-icon">➕</span> <span class="btn-text">Tambah Tugas</span>
+                    </button>
+                </header>
+
+                <!-- COLLAPSIBLE ACCORDION CREATOR PANEL -->
+                <div id="task-creator-panel" class="task-creator-panel" style="display: none;">
+                    <div class="creator-panel-header">
+                        <h3 id="creator-panel-title">Buat Tugas Baru</h3>
+                        <button class="btn-creator-panel-close" onclick="toggleAddForm(false)">✕</button>
+                    </div>
+                    
+                    <div class="creator-panel-body">
+                        <div class="form-grid">
+                            <div class="form-field full-width">
+                                <label for="task-title">Judul Tugas</label>
+                                <input type="text" id="task-title" placeholder="Tulis tugas atau aktivitas..." />
+                            </div>
+                            <div class="form-field full-width">
+                                <label for="task-desc">Deskripsi (Opsional)</label>
+                                <textarea id="task-desc" placeholder="Tambahkan catatan detail jika diperlukan..."></textarea>
+                            </div>
+                            <div class="form-field">
+                                <label for="task-category">📂 Pilih Kategori</label>
+                                <select id="task-category">
+                                    <option value="">Pilih kategori atau kelompokkan tugas</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="task-priority">Prioritas</label>
+                                <select id="task-priority">
+                                    <option value="low">Rendah (Low)</option>
+                                    <option value="medium" selected>Sedang (Medium)</option>
+                                    <option value="high">Tinggi (High)</option>
+                                </select>
+                            </div>
+                            <div class="form-field full-width">
+                                <label>🏷️ Tag Penanda (Klik untuk mengaktifkan beberapa)</label>
+                                <!-- Interactive custom pills selector representing the tags list! -->
+                                <div id="interactive-tag-pills" class="interactive-tag-pills-list"></div>
+                                <!-- Behind the scenes placeholder select to avoid compatibility breakage with internal scripts -->
+                                <select id="task-tags" multiple class="friendly-multiselect" style="display: none;"></select>
+                            </div>
+                            <div class="form-field full-width">
+                                <label for="task-due">Tenggat Waktu</label>
+                                <input type="date" id="task-due" />
+                            </div>
+                        </div>
+                        <div class="creator-panel-actions-row">
+                            <button onclick="addTask()" id="submit-task-btn" class="btn-submit-task">Tambah Tugas</button>
+                            <button onclick="toggleAddForm(false)" class="btn-cancel-task">Batal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVE SIDEBAR FILTER CHIP BAR -->
+                <div id="active-filters-bar" class="active-filters-toast-bar" style="display: none;">
+                    <span class="active-toast-label">Menyaring pencarian:</span>
+                    <div id="active-filters-chips" class="active-toast-chips-container"></div>
+                    <button class="btn-reset-filters-toast" onclick="clearSidebarFilters()">Reset Filter ✕</button>
+                </div>
+
+                <!-- INTEGRATED FILTER & REAL-TIME SEARCH BOX -->
+                <section class="filter-card">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Cari tugas berdasarkan judul atau deskripsi..." oninput="triggerFilters()" />
+                    </div>
+                    
+                    <div class="controls-row">
+                        <!-- Status Filters -->
+                        <div class="filter-group">
+                            <span class="filter-label">Status:</span>
+                            <div class="filter-pills">
+                                <button class="pill-btn active" data-filter="status" data-val="all" onclick="setFilter('status', 'all', this)">Semua</button>
+                                <button class="pill-btn" data-filter="status" data-val="active" onclick="setFilter('status', 'active', this)">Aktif</button>
+                                <button class="pill-btn" data-filter="status" data-val="completed" onclick="setFilter('status', 'completed', this)">Selesai</button>
+                            </div>
+                        </div>
+ 
+                        <!-- Priority Filters -->
+                        <div class="filter-group">
+                            <span class="filter-label">Prioritas:</span>
+                            <div class="filter-pills">
+                                <button class="pill-btn active" data-filter="priority" data-val="all" onclick="setFilter('priority', 'all', this)">Semua</button>
+                                <button class="pill-btn urgent" data-filter="priority" data-val="high" onclick="setFilter('priority', 'high', this)">Tinggi</button>
+                                <button class="pill-btn warning" data-filter="priority" data-val="medium" onclick="setFilter('priority', 'medium', this)">Sedang</button>
+                                <button class="pill-btn relaxed" data-filter="priority" data-val="low" onclick="setFilter('priority', 'low', this)">Rendah</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DYNAMIC TASK LIST VIEWPORT -->
+                <section class="task-list">
+                    <div class="list-header">
+                        <h2>Daftar Tugas</h2>
+                        <span id="task-counter" class="pulse-counter">Sedang memuat...</span>
+                    </div>
+                    <div id="tasks" class="tasks-container"></div>
+                </section>
+
+                <!-- MOBILE FLOATING ACTION BUTTON (FAB) -->
+                <button id="mobile-fab-btn" class="mobile-fab" onclick="toggleAddForm(true)" title="Tambah Tugas">
+                    ➕
+                </button>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
